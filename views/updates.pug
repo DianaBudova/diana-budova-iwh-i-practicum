@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title= title
+    link(rel="stylesheet", href="/css/style.css")
+  body
+    header
+      h1= title
+
+    form(method="POST", action="/update-cobj")
+      div
+        label(for="aperture_weighted_cube_name") Aperture Weighted Cube Name * :
+        input#aperture_weighted_cube_name(type="text", name="aperture_weighted_cube_name", required=true, placeholder="Enter required name")
+      div
+        label(for="name") Name (custom property):
+        input#name(type="text", name="name", required=true, placeholder="Enter name")
+      div
+        label(for="bio") Bio (custom property):
+        input#bio(type="text", name="bio", placeholder="Enter bio")
+      div
+        label(for="allows_portal_placement") Allows Portal Placement (custom property):
+        input#allows_portal_placement(type="radio", name="allows_portal_placement")
+      div
+        button(type="submit") Submit
+
+    p
+      a(href="/") Return to the homepage
