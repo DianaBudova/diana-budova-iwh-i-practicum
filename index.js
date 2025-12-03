@@ -13,7 +13,43 @@ const PRIVATE_APP_ACCESS = process.env.PRIVATE_APP_ACCESS;
 
 // TODO: ROUTE 1 - Create a new app.get route for the homepage to call your custom object data. Pass this data along to the front-end and create a new pug template in the views folder.
 
-// * Code for Route 1 goes here
+app.get('/', async (req, res) => {
+    const CUSTOM_OBJECT_TYPE = '2-195401556';
+
+    const PROPERTIES = ['aperture_weighted_cube_name', 'allows_portal_placement', 'bio', 'name'];
+
+    const propsQuery = PROPERTIES.map(
+        p => `properties=${encodeURIComponent(p)}`
+    ).join('&');
+
+    const url = `https://api.hubapi.com/crm/v3/objects/${CUSTOM_OBJECT_TYPE}?limit=100&${propsQuery}`;
+
+    const headers = {
+        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+        'Content-Type': 'application/json'
+    };
+
+    try {
+        const resp = await axios.get(url, { headers });
+
+        const records = resp.data.results || [];
+
+        res.render('homepage', {
+            title: 'Custom Objects | Integrating With HubSpot I Practicum',
+            records,
+            properties: PROPERTIES
+        });
+    } catch (err) {
+        console.error('Error fetching custom object records:', err.response ? err.response.data : err.message);
+
+        res.render('homepage', {
+            title: 'Custom Objects | Integrating With HubSpot I Practicum',
+            records: [],
+            properties: PROPERTIES,
+            error: 'Could not fetch records. Check server logs for details.'
+        });
+    }
+});
 
 // TODO: ROUTE 2 - Create a new app.get route for the form to create or update new custom object data. Send this data along in the next route.
 

@@ -1,0 +1,56 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title= title
+    link(rel="stylesheet", href="/css/style.css")
+  body
+    nav(role="navigation", aria-label="Main navigation")
+      a(href="/") Home
+      |  ·
+      a(href="/update-cobj") Add/Update this table
+
+    header
+      h1= title
+
+    main
+      - const human = (s) => {
+      -   if (!s) return '';
+      -   return s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      - };
+
+      if error
+        section(role="status", aria-live="polite")
+          p(style="color: red;") #{error}
+
+      section
+        if records && records.length
+          p #{records.length} #{records.length === 1 ? 'record' : 'records'} found.
+          table(role="table", border="1", cellpadding="8", cellspacing="0")
+            caption #{human(title || 'Custom Object Table')}
+            thead
+              tr
+                th(scope="col") ID
+                each prop in properties
+                  th(scope="col") #{human(prop)}
+            tbody
+              each rec in records
+                tr
+                  td(data-label="ID") #{rec.id}
+                  each prop in properties
+                    - var val = (rec.properties && rec.properties[prop]) ? rec.properties[prop] : ''
+                    if val === ''
+                      td(data-label=human(prop)) &ndash;
+                    else
+                      td(data-label=human(prop)) #{val}
+        else
+          p There are no records to display.
+          p
+            a(href="/update-cobj") Add your first record
+
+    footer
+      p
+        a(href="/update-cobj") Add/Update this table
+        |  ·
+        a(href="/") Return to home
