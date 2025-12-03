@@ -25,7 +25,39 @@ app.get('/update-cobj', (req, res) => {
 
 // TODO: ROUTE 3 - Create a new app.post route for the custom objects form to create or update your custom object data. Once executed, redirect the user to the homepage.
 
-// * Code for Route 3 goes here
+app.post('/update-cobj', async (req, res) => {
+    const CUSTOM_OBJECT_TYPE = '2-195401556';
+    
+    const properties = {
+        aperture_weighted_cube_name: req.body.aperture_weighted_cube_name || '',
+        name: req.body.name || '',
+        bio: req.body.bio || '',
+        allows_portal_placement: (req.body.allows_portal_placement == 'on' ? 'true' : 'false') || ''
+    };
+
+    const url = `https://api.hubapi.com/crm/v3/objects/${CUSTOM_OBJECT_TYPE}`;
+
+    const headers = {
+        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+        'Content-Type': 'application/json'
+    };
+
+    const body = {
+        properties
+    };
+
+    try {
+        console.log(body);
+        const resp = await axios.post(url, body, { headers });
+        console.log('Created custom object record:', resp.data);
+
+        res.redirect('/');
+    } catch (err) {
+        console.error('Error creating custom object record:', err.response ? err.response.data : err.message);
+
+        res.redirect('back');
+    }
+});
 
 /** 
 * * This is sample code to give you a reference for how you should structure your calls. 
